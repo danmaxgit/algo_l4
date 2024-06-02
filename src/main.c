@@ -17,6 +17,15 @@ int hash(char *key) // min 0, max 1463
     return h;
 }
 
+int hashv2(char *key) // min 0, max 1463
+{
+    int h = 1293739;
+    for(int i = 0; i < 6; i++){
+        h += ((i * 3) * key[i] * key[i]);
+    }
+    return h % 1500;
+}
+
 bool validate_input(char *input) {
     if (strlen(input) != 6) {
         return false;
@@ -105,9 +114,9 @@ int main(int argc, char** argv){
     //} while (!validate_input(buff));
     char temp;
 
-    HashMap *map = init_hash(1464, hash);
+    HashMap *map = init_hash(1500, hashv2);
 
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 10000; ++i) {
         for (int j = 0; j < 6; ++j) {
             switch (j) {
                 case 0:
