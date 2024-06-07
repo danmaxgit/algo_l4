@@ -1,0 +1,8 @@
+set style histogram 
+set terminal png
+set autoscale xmax
+set output "plot1.png"
+plot 'data.txt' using 1:2
+set autoscale xmax
+set output "plot2.png"
+plot 'data.txt' using 1:3
