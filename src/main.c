@@ -1,6 +1,5 @@
 #include "stdio.h"
 #include "time.h"
-#include <complex.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,7 +16,7 @@ int hash(char *key) // min 0, max 1463
     return h;
 }
 
-int hashv2(char *key) // min 0, max 1463
+int hashv2(char *key) // min 0, max 1499
 {
     int h = 1293739;
     for(int i = 0; i < 6; i++){
@@ -37,9 +36,6 @@ bool validate_input(char *input) {
     }
     return false;
 }
-
-
-
 
 typedef struct Node{
     char value[7];
@@ -90,11 +86,9 @@ void append_hash(HashMap *m, char *v){
         for (int i = 0; i < 7; i++) {
             m->data[m->hash(v)].value[i] = v[i];
         }
-        m->data[m->hash(v)].num++;
     }
     else {
         Node* t = &m->data[m->hash(v)];
-        m->data[m->hash(v)].num++;
         while (t->next) {
             t = t->next;
         }
@@ -103,6 +97,7 @@ void append_hash(HashMap *m, char *v){
             t->next->value[i] = v[i];
         }
     }   
+    m->data[m->hash(v)].num++;
 }
 
 
@@ -114,8 +109,8 @@ int main(int argc, char** argv){
     //} while (!validate_input(buff));
     char temp;
 
-    HashMap *map = init_hash(1500, hashv2);
-
+    HashMap *map = init_hash(1464, hash);
+    HashMap *map_v2 = init_hash(1500, hashv2);
     for (int i = 0; i < 10000; ++i) {
         for (int j = 0; j < 6; ++j) {
             switch (j) {
@@ -134,11 +129,17 @@ int main(int argc, char** argv){
         }
         buff[7] = '\0';
         append_hash(map, buff);
+        append_hash(map_v2, buff);
     }
-    FILE *f = fopen("/home/danmax/code/saod/l4/data.csv", "w");
-    for (int i = 0; i < 1464; i++) {
-         fprintf(f, "%d,%d\n", i, map->data[i].num);
+    FILE *f = fopen("/home/danmax/code/saod/l4/data.txt", "w");
+    for (int i = 0; i < 1500; i++) {
+        if (i < 1464) {
+            fprintf(f, "%d\t%d\t%d\n", i, map->data[i].num, map_v2->data[i].num);
+        } else {
+            fprintf(f, "%d\t%d\n", i, map->data[i].num);
         }
+    }
     free_hash(map);
+    free_hash(map_v2);
     return 0;   
 }
